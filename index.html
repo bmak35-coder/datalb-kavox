@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="DataLB — Professional MT4/MT5 Trading Statement Analysis powered by KAVOX Predictive Engine™" />
+<title>DataLB · KAVOX Predictive Engine™</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+:root{--ink:#040912;--ink2:#07101e;--ink3:#0c1829;--card:#0a1525;--bd:rgba(0,210,255,.10);--bd2:rgba(0,210,255,.22);--cy:#00d2ff;--cybg:rgba(0,210,255,.07);--wh:#ffffff;--mu:#7a90ab;--mu2:#a8bdd1;--rd:#ff4060;--rdbg:rgba(255,64,96,.09);--am:#f59e0b;--ambg:rgba(245,158,11,.09);--gn:#16c784;--gnbg:rgba(22,199,132,.09);--pu:#a78bfa;--pubg:rgba(167,139,250,.09)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--ink);color:var(--wh);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100dvh}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-thumb{background:rgba(0,210,255,.2);border-radius:4px}
+button{cursor:pointer;font-family:inherit}button:disabled{opacity:.45;cursor:not-allowed}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.fade-in{animation:fadeIn .35s ease both}
+.mono{font-family:'JetBrains Mono',monospace}.syne{font-family:'Syne',sans-serif;font-weight:800}
+
+/* Header */
+#header{background:rgba(4,9,18,.96);border-bottom:1px solid var(--bd);padding:10px 20px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:50;backdrop-filter:blur(12px)}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;letter-spacing:2px}
+.logo span{color:var(--cy)}
+.hbadge{font-family:'JetBrains Mono',monospace;font-size:7.5px;letter-spacing:1.5px;padding:2px 8px;border-radius:3px;background:var(--cybg);border:1px solid var(--bd2);color:var(--cy)}
+.spacer{flex:1}
+#reset-btn{display:none;background:none;border:1px solid var(--bd);border-radius:5px;color:var(--mu);font-family:'JetBrains Mono',monospace;font-size:9px;padding:4px 12px}
+
+/* Upload */
+#upload-section{padding:28px 20px}
+.hero-text{text-align:center;margin-bottom:28px}
+.hero-text h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(20px,4vw,28px);line-height:1.2;margin-bottom:8px}
+.hero-text h1 span{color:var(--cy)}
+.hero-text p{color:var(--mu);font-size:13px;max-width:520px;margin:0 auto;line-height:1.65}
+.dropzone{border:2px dashed var(--bd2);border-radius:14px;padding:52px 24px;text-align:center;cursor:pointer;transition:all .2s;background:rgba(0,210,255,.02);margin-bottom:20px}
+.dropzone:hover,.dropzone.over{border-color:var(--cy);background:var(--cybg)}
+.dropzone h2{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;margin:12px 0 8px}
+.dropzone p{color:var(--mu);font-size:12.5px;margin-bottom:18px;line-height:1.6}
+.dropzone strong{color:var(--mu2)}
+.btn-primary{display:inline-block;background:var(--cy);color:var(--ink);border:none;border-radius:8px;padding:10px 28px;font-weight:700;font-size:13px;letter-spacing:.5px}
+.feature-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.feature-card{background:var(--card);border:1px solid var(--bd);border-radius:9px;padding:12px 14px}
+.feature-card .icon{font-size:18px;margin-bottom:6px}
+.feature-card h4{font-weight:600;font-size:12px;margin-bottom:3px}
+.feature-card p{color:var(--mu);font-size:11px;line-height:1.55}
+
+/* Progress */
+#progress-section{display:none;padding:48px 20px;max-width:520px;margin:0 auto}
+.spinner{width:52px;height:52px;border:3px solid var(--cybg);border-top:3px solid var(--cy);border-radius:50%;margin:0 auto 18px;animation:spin 1s linear infinite}
+#progress-section h2{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;text-align:center;margin-bottom:6px}
+#progress-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--cy);text-align:center;letter-spacing:1px;margin-bottom:28px}
+.step-list{display:flex;flex-direction:column;gap:6px}
+.step{display:flex;align-items:center;gap:10px;padding:7px 12px;border-radius:7px;border:1px solid var(--bd);background:rgba(255,255,255,.02);transition:all .25s}
+.step.active{border-color:var(--bd2);background:var(--cybg)}
+.step.done{border-color:rgba(22,199,132,.2);background:rgba(22,199,132,.06)}
+.step .si{width:20px;text-align:center;font-size:14px}
+.step .sl{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--mu);flex:1}
+.step.active .sl{color:var(--cy);font-weight:600}
+.step.done .sl{color:var(--gn)}
+.step .ss{font-family:'JetBrains Mono',monospace;font-size:8px}
+.step.active .ss{color:var(--cy);animation:pulse 1.2s ease infinite}
+.step.done .ss{color:var(--gn)}
+
+/* Error */
+#error-section{display:none;padding:48px 20px;text-align:center}
+.error-box{max-width:480px;margin:0 auto 20px;background:var(--rdbg);border:1px solid rgba(255,64,96,.3);border-radius:12px;padding:24px 28px}
+.error-box h3{font-family:'Syne',sans-serif;font-weight:800;color:var(--rd);font-size:18px;margin-bottom:8px}
+.error-box p{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:rgba(255,64,96,.8);line-height:1.65}
+
+/* Dashboard */
+#dashboard-section{display:none;padding:0 20px 40px;max-width:1100px;margin:0 auto}
+
+/* Identity banner */
+.identity-banner{background:var(--card);border-radius:14px;padding:18px 20px;margin-bottom:16px;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.grade-ring-wrap{position:relative;width:90px;height:90px;flex-shrink:0}
+.grade-ring-wrap svg{transform:rotate(-90deg)}
+.ring-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.ring-grade{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;line-height:1}
+.ring-score{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--mu)}
+.id-meta{flex:1;min-width:200px}
+.id-type{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;line-height:1.2;margin-bottom:4px}
+.id-sub{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--mu2);margin-bottom:8px;letter-spacing:.4px}
+.id-tags{display:flex;gap:6px;flex-wrap:wrap}
+.id-tag{font-family:'JetBrains Mono',monospace;font-size:9px;padding:2px 8px;background:var(--cybg);border:1px solid var(--bd2);border-radius:4px;color:var(--cy)}
+.id-stats{display:flex;flex-direction:column;gap:8px;min-width:180px}
+.id-stat{display:flex;justify-content:space-between;align-items:center}
+.id-stat-lbl{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--mu);text-transform:uppercase;letter-spacing:.5px}
+.id-stat-val{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700}
+
+/* Tabs */
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:16px;border-bottom:1px solid var(--bd);padding-bottom:8px}
+.tab-btn{border:1px solid var(--bd);border-radius:6px;padding:5px 12px;font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:600;background:none;color:var(--mu);transition:all .15s}
+.tab-btn.active{background:var(--cybg);border-color:var(--bd2);color:var(--cy)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* Metric cards */
+.metric-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:9px;margin-bottom:16px}
+.mc{background:var(--card);border:1px solid var(--bd);border-radius:9px;padding:11px 13px}
+.mc-lbl{font-family:'JetBrains Mono',monospace;font-size:7.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--mu);margin-bottom:5px}
+.mc-val{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;line-height:1;margin-bottom:2px}
+.mc-sub{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--mu)}
+
+/* Section header */
+.sec-hdr{display:flex;align-items:center;gap:8px;margin:16px 0 10px}
+.sec-hdr span{font-family:'Syne',sans-serif;font-weight:800;font-size:13px;white-space:nowrap}
+.sec-hdr-rule{flex:1;height:1px;background:linear-gradient(90deg,var(--bd2) 0%,transparent 100%)}
+
+/* Failure prob */
+.fp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:12px}
+.fp-card{background:var(--card);border-radius:9px;padding:14px 16px;text-align:center;border:1px solid}
+.fp-card .fp-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--mu);margin-bottom:6px}
+.fp-card .fp-num{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;line-height:1}
+
+/* Rules */
+.rule-card{border:1px solid;border-radius:9px;overflow:hidden;margin-bottom:10px}
+.rule-top{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.05)}
+.rule-id{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;min-width:52px}
+.rule-name{font-family:'Syne',sans-serif;font-weight:800;font-size:13px;flex:1}
+.rule-sev{font-family:'JetBrains Mono',monospace;font-size:7.5px;font-weight:700;padding:2px 7px;border-radius:3px}
+.rule-body{padding:10px 14px;display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:11.5px}
+@media(max-width:600px){.rule-body{grid-template-columns:1fr}}
+.rule-blk-lbl{font-family:'JetBrains Mono',monospace;font-size:7.5px;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;opacity:.7}
+.rule-blk-txt{color:var(--mu2);line-height:1.6}
+
+/* Sessions */
+.sess-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.sess-card{border-radius:10px;overflow:hidden;border:1px solid}
+.sess-hdr{padding:11px 14px 10px;border-bottom:1px solid rgba(255,255,255,.06)}
+.sess-name{font-family:'Syne',sans-serif;font-weight:800;font-size:14px;margin-bottom:4px}
+.sess-badge{font-family:'JetBrains Mono',monospace;font-size:7px;font-weight:700;padding:2px 6px;border-radius:3px;border:1px solid}
+.sess-body{padding:10px 14px}
+.sess-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.sess-row:last-child{border-bottom:none}
+.sess-row-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--mu)}
+.sess-row-val{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700}
+
+/* Validation */
+.sev-pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.sev-pill{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 16px;border-radius:7px;border:1px solid;flex:1;min-width:70px}
+.sev-pill-num{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;line-height:1}
+.sev-pill-lbl{font-family:'JetBrains Mono',monospace;font-size:7.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.finding-row{display:flex;gap:8px;align-items:flex-start;padding:8px 12px;border-radius:7px;border:1px solid;margin-bottom:6px}
+.finding-sev{font-family:'JetBrains Mono',monospace;font-size:7.5px;font-weight:700;padding:2px 6px;border-radius:3px;flex-shrink:0;margin-top:1px}
+.finding-msg{font-size:11.5px;color:var(--mu2);line-height:1.55;flex:1}
+
+/* Report */
+#report-generate-area{text-align:center;padding:48px 20px}
+#report-generate-area h2{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;margin-bottom:8px}
+#report-generate-area p{color:var(--mu);font-size:13px;margin-bottom:24px;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.65}
+.btn-report{background:var(--rd);color:#fff;border:none;border-radius:8px;padding:12px 32px;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;letter-spacing:.5px;cursor:pointer}
+.btn-note{margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--mu)}
+#report-loading{display:none;text-align:center;padding:48px 20px}
+#report-error{display:none;background:var(--rdbg);border:1px solid rgba(255,64,96,.3);border-radius:9px;padding:16px;margin-bottom:12px}
+#report-output{display:none}
+.report-section{background:var(--card);border:1px solid var(--bd);border-radius:10px;overflow:hidden;margin-bottom:10px}
+.report-sec-hdr{display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid rgba(255,255,255,.05);background:var(--ink3)}
+.report-sec-num{font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(0,210,255,.65)}
+.report-sec-title{font-family:'Syne',sans-serif;font-weight:800;font-size:13px}
+.report-sec-body{padding:14px 16px;font-size:13px;line-height:1.75;color:var(--mu2)}
+
+/* Table */
+.data-table{width:100%;border-collapse:collapse;font-size:11px}
+.data-table th{text-align:left;padding:6px 10px;background:var(--ink3);font-family:'JetBrains Mono',monospace;font-size:7.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--mu);border-bottom:1px solid var(--bd);white-space:nowrap}
+.data-table td{padding:6px 10px;border-bottom:1px solid rgba(255,255,255,.03);white-space:nowrap}
+.data-table tr:hover td{background:rgba(0,210,255,.02)}
+.tbl-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--bd);margin-bottom:16px}
+
+/* Footer */
+footer{padding:14px 20px;border-top:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+footer span{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--mu)}
+footer .tagline{font-size:8.5px;color:rgba(122,144,171,.4)}
+
+@media(max-width:600px){
+  .identity-banner{flex-direction:column;align-items:flex-start}
+  .id-stats{min-width:100%;flex-direction:row;flex-wrap:wrap;gap:12px}
+  .id-stat{flex:1;min-width:120px;flex-direction:column;align-items:flex-start;gap:2px}
+  .fp-grid{grid-template-columns:1fr}
+  .rule-body{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header id="header">
+  <div class="logo">DATA<span>LB</span></div>
+  <span class="hbadge">KAVOX PREDICTIVE ENGINE™</span>
+  <div class="spacer"></div>
+  <button id="reset-btn" onclick="resetApp()">← New file</button>
+</header>
+
+<!-- UPLOAD -->
+<div id="upload-section">
+  <div class="hero-text">
+    <h1>Professional MT4/MT5<br><span>Trading Statement Analysis</span></h1>
+    <p>Upload your MetaTrader statement and run the full 10-engine diagnostic pipeline. All analysis runs locally in your browser — your trade data never leaves your device.</p>
+  </div>
+  <div class="dropzone" id="dropzone" onclick="document.getElementById('file-input').click()"
+    ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
+    <input type="file" id="file-input" accept=".htm,.html" style="display:none" onchange="onFileChange(this)">
+    <div style="font-size:40px">📊</div>
+    <h2>Drop your MT4 / MT5 statement</h2>
+    <p>Export from MetaTrader: <strong>Account History → All History → Save as Report (.htm)</strong></p>
+    <span class="btn-primary">Browse files</span>
+  </div>
+  <div class="feature-grid">
+    <div class="feature-card"><div class="icon">🔍</div><h4>MT4 / MT5 Parser</h4><p>Handles all broker column variants and date formats</p></div>
+    <div class="feature-card"><div class="icon">📐</div><h4>Metrics Engine v2</h4><p>Drawdown, streaks, equity curve, 40+ statistics</p></div>
+    <div class="feature-card"><div class="icon">🕐</div><h4>Session Engine</h4><p>Asia · London · New York performance breakdown</p></div>
+    <div class="feature-card"><div class="icon">🧠</div><h4>Behaviour Engine</h4><p>Escalation, revenge, overtrading, concentration</p></div>
+    <div class="feature-card"><div class="icon">⚖️</div><h4>Rules Engine</h4><p>25 diagnostic rules across 5 categories</p></div>
+    <div class="feature-card"><div class="icon">🪪</div><h4>Trader Identity</h4><p>9 trader types, risk profile, behaviour profile</p></div>
+    <div class="feature-card"><div class="icon">🏦</div><h4>Broker Intelligence</h4><p>A-Book / B-Book / Hybrid routing decision</p></div>
+    <div class="feature-card"><div class="icon">📉</div><h4>Failure Probability</h4><p>30 / 90 / 180-day survival modelling</p></div>
+    <div class="feature-card"><div class="icon">🔮</div><h4>KAVOX Predictive™</h4><p>1,000-path Monte Carlo performance forecast</p></div>
+    <div class="feature-card"><div class="icon">✅</div><h4>Validation Engine</h4><p>34 cross-checks for internal consistency</p></div>
+    <div class="feature-card"><div class="icon">🤖</div><h4>AI Executive Report</h4><p>Claude-powered institutional report (11 sections)</p></div>
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div id="progress-section">
+  <div class="spinner"></div>
+  <h2>Running analysis pipeline…</h2>
+  <div id="progress-label">Initialising…</div>
+  <div class="step-list" id="step-list"></div>
+</div>
+
+<!-- ERROR -->
+<div id="error-section">
+  <div class="error-box">
+    <h3>Analysis Failed</h3>
+    <p id="error-msg"></p>
+  </div>
+  <button class="btn-primary" onclick="resetApp()">Try another file</button>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard-section">
+  <!-- Identity banner -->
+  <div class="identity-banner" id="identity-banner" style="margin-top:16px;border:1px solid #333"></div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('overview')">Overview</button>
+    <button class="tab-btn" onclick="showTab('metrics')">Metrics</button>
+    <button class="tab-btn" onclick="showTab('sessions')">Sessions</button>
+    <button class="tab-btn" onclick="showTab('behaviour')">Behaviour</button>
+    <button class="tab-btn" id="rules-tab-btn" onclick="showTab('rules')">Rules</button>
+    <button class="tab-btn" onclick="showTab('forecast')">Forecast</button>
+    <button class="tab-btn" onclick="showTab('validation')">Validation</button>
+    <button class="tab-btn" onclick="showTab('report')">🤖 AI Report</button>
+  </div>
+
+  <div id="tab-overview"  class="tab-content active"></div>
+  <div id="tab-metrics"   class="tab-content"></div>
+  <div id="tab-sessions"  class="tab-content"></div>
+  <div id="tab-behaviour" class="tab-content"></div>
+  <div id="tab-rules"     class="tab-content"></div>
+  <div id="tab-forecast"  class="tab-content"></div>
+  <div id="tab-validation"class="tab-content"></div>
+  <div id="tab-report"    class="tab-content">
+    <div id="report-generate-area">
+      <div style="font-size:48px;margin-bottom:16px">🤖</div>
+      <h2>AI Executive Report</h2>
+      <p>Generate a professional 11-section institutional report powered by Claude Sonnet. The report is based entirely on the analysis already computed.</p>
+      <button class="btn-report" onclick="generateReport()">Generate AI Report</button>
+      <div class="btn-note">Calls Claude via secure serverless function — no API key in the browser</div>
+    </div>
+    <div id="report-loading">
+      <div class="spinner" style="border-top-color:var(--rd)"></div>
+      <p style="font-family:'Syne',sans-serif;font-weight:800;font-size:16px;margin-bottom:6px">Claude is writing the report…</p>
+      <p style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--mu)">Generating 11 sections · institutional language</p>
+    </div>
+    <div id="report-error"></div>
+    <div id="report-output"></div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <span>DataLB · Powered by <span style="color:var(--cy)">KAVOX Predictive Engine™</span></span>
+  <span class="tagline">For educational purposes only · Not financial advice</span>
+</footer>
+
+<script>
+// ═══════════ PIPELINE STEPS ═══════════
+const STEPS = [
+  {id:'parser',    label:'Parsing statement'},
+  {id:'metrics',   label:'Calculating metrics'},
+  {id:'sessions',  label:'Classifying sessions'},
+  {id:'behaviour', label:'Analysing behaviour'},
+  {id:'rules',     label:'Evaluating rules'},
+  {id:'identity',  label:'Building trader identity'},
+  {id:'broker',    label:'Computing broker routing'},
+  {id:'failure',   label:'Modelling failure probability'},
+  {id:'kavox',     label:'KAVOX Predictive Engine™'},
+  {id:'validation',label:'Validating all outputs'},
+]
+
+// ═══════════ STATE ═══════════
+let RESULT = null
+let SNAPSHOT = null
+
+// ═══════════ HELPERS ═══════════
+const fP  = v => v == null ? '—' : `${Number(v).toFixed(1)}%`
+const fPF = v => v == null ? '—' : v === Infinity ? '∞' : Number(v).toFixed(2)
+const fC  = (v, cur='') => `${cur?cur+' ':''}${Math.abs(v??0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}`
+const pfx = v => v >= 0 ? '+' : ''
+const GRADE_COLORS = {'A+':'#16c784','A':'#16c784','B+':'#00d2ff','B':'#00d2ff','C+':'#f59e0b','C':'#f59e0b','D+':'#ff4060','D':'#ff4060','F':'#ff4060'}
+const gc = g => GRADE_COLORS[g] || '#7a90ab'
+const SEV_COLORS = {CRITICAL:'#ff4060',HIGH:'#f59e0b',MEDIUM:'#00d2ff',LOW:'#a8bdd1'}
+
+function mc(label, value, color='var(--mu2)', sub='') {
+  return `<div class="mc"><div class="mc-lbl">${label}</div><div class="mc-val" style="color:${color}">${value}</div>${sub?`<div class="mc-sub">${sub}</div>`:''}</div>`
+}
+function secHdr(title) {
+  return `<div class="sec-hdr"><span>${title}</span><div class="sec-hdr-rule"></div></div>`
+}
+
+// ═══════════ UPLOAD / DRAG DROP ═══════════
+function onDragOver(e) { e.preventDefault(); document.getElementById('dropzone').classList.add('over') }
+function onDragLeave() { document.getElementById('dropzone').classList.remove('over') }
+function onDrop(e) { e.preventDefault(); document.getElementById('dropzone').classList.remove('over'); handleFile(e.dataTransfer.files?.[0]) }
+function onFileChange(input) { handleFile(input.files?.[0]) }
+
+function handleFile(file) {
+  if (!file) return
+  const ext = file.name.split('.').pop().toLowerCase()
+  if (!['htm','html'].includes(ext)) { alert(`Expected .htm or .html — received .${ext}`); return }
+  const reader = new FileReader()
+  reader.onload = e => runAnalysis(e.target.result, file.name)
+  reader.readAsText(file, 'utf-8')
+}
+
+// ═══════════ PROGRESS UI ═══════════
+function showProgress() {
+  document.getElementById('upload-section').style.display = 'none'
+  document.getElementById('progress-section').style.display = 'block'
+  document.getElementById('error-section').style.display = 'none'
+  document.getElementById('dashboard-section').style.display = 'none'
+  const list = document.getElementById('step-list')
+  list.innerHTML = STEPS.map((s,i) => `<div class="step" id="step-${s.id}">
+    <span class="si">○</span>
+    <span class="sl">${String(i+1).padStart(2,'0')}  ${s.label}</span>
+    <span class="ss"></span>
+  </div>`).join('')
+}
+
+function setStep(id) {
+  document.getElementById('progress-label').textContent = STEPS.find(s=>s.id===id)?.label || '…'
+  let found = false
+  STEPS.forEach(s => {
+    const el = document.getElementById('step-'+s.id)
+    if (!el) return
+    if (s.id === id) {
+      el.className='step active'; el.querySelector('.si').textContent='⟳'; el.querySelector('.ss').textContent='RUNNING'; found=true
+    } else if (!found) {
+      el.className='step done'; el.querySelector('.si').textContent='✓'; el.querySelector('.ss').textContent='DONE'
+    } else {
+      el.className='step'; el.querySelector('.si').textContent='○'; el.querySelector('.ss').textContent=''
+    }
+  })
+}
+
+function showError(msg) {
+  document.getElementById('progress-section').style.display='none'
+  document.getElementById('error-section').style.display='block'
+  document.getElementById('error-msg').textContent = msg
+}
+
+// ═══════════ MAIN ANALYSIS PIPELINE ═══════════
+async function runAnalysis(html, fileName) {
+  showProgress()
+
+  const tick = async id => { setStep(id); await new Promise(r=>setTimeout(r,10)) }
+
+  try {
+    await tick('parser')
+    const parsed = parseStatement(html, fileName)
+    if (!parsed.closedTrades.length) throw new Error('No closed market trades found in this statement.')
+
+    await tick('metrics')
+    const m = calculateMetrics(parsed)
+    if (!m) throw new Error('No buy/sell trades found — the file may not contain closed market orders.')
+
+    await tick('sessions')
+    const s = calculateSessions(m.trades, 2)
+
+    await tick('behaviour')
+    const b = calculateBehaviour(m.trades)
+
+    await tick('rules')
+    const r = evaluateRules(m, s, b)
+
+    await tick('identity')
+    const id = classifyTraderIdentity(m, s, b, r)
+
+    await tick('broker')
+    const bi = computeBrokerIntelligence(m, s, b, r, id)
+
+    await tick('failure')
+    const fa = computeFailureProbability(m, s, b, r, id, bi)
+
+    await tick('kavox')
+    const fcast = runKavoxPredictiveEngine(m, s, b, r, id, bi, fa)
+
+    await tick('validation')
+    const vld = runValidationEngine(m, s, b, r, id, bi, fa, fcast)
+
+    RESULT = { parsed, m, s, b, r, id, bi, fa, fcast, vld }
+    SNAPSHOT = buildReportSnapshot(m, s, b, r, id, bi, fa)
+
+    renderDashboard()
+
+  } catch(err) {
+    console.error(err)
+    showError(err.message || 'Unknown error during analysis')
+  }
+}
+
+// ═══════════ SNAPSHOT ═══════════
+function buildReportSnapshot(m, s, b, r, id, bi, fa) {
+  const cur = m.currency||''
+  const fc2 = v=>`${cur?cur+' ':''}${Math.abs(v??0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}`
+  const bS = s.bestKey  ? s.sessions[s.bestKey]  : null
+  const wS = s.worstKey ? s.sessions[s.worstKey] : null
+  return {
+    identity:{traderType:id.traderType,riskProfile:id.riskProfile,behaviourProfile:id.behaviourProfile,accountGrade:id.accountGrade,confidence:id.confidence,diagScore:id.diagScore,mainStrength:id.mainStrength,mainWeakness:id.mainWeakness,primaryFailureDriver:id.primaryFailureDriver,recommendedFocus:id.recommendedFocus},
+    metrics:{totalTrades:m.totalTrades,calDays:m.calDays,netProfit:`${m.netProfit>=0?'+':''}${fc2(m.netProfit)}`,winRate:fP(m.winRate),profitFactor:fPF(m.profitFactor),avgWin:m.avgWin?fc2(m.avgWin):'—',avgLoss:m.avgLoss?fc2(m.avgLoss):'—',largestWin:m.largestWin?fc2(m.largestWin):'—',largestLoss:m.largestLoss?fc2(m.largestLoss):'—',maxRelDD:fP(m.maxRelDD),recoveryFactor:m.recoveryFactor!=null?m.recoveryFactor.toFixed(2):'—',maxLossStreak:m.maxLossStreak,avgHoldMs:m.avgHoldMs},
+    behaviour:{martingaleConf:b.lotEscalation.martingaleConf,escalationRate:fP(b.lotEscalation.escalationRate),lotCV:fP(b.lotEscalation.lotCV*100),immediateReentryRate:fP(b.recoveryBehaviour.immediateReentryRate),revengeDetected:b.recoveryBehaviour.revengeDetected,postLossWinRate:fP(b.recoveryBehaviour.postLossWinRate),baselineWinRate:fP(b.recoveryBehaviour.baselineWinRate),holdRatio:b.holdingBehaviour.holdRatio!=null?b.holdingBehaviour.holdRatio.toFixed(2):'—',tpHitRate:b.holdingBehaviour.tpHitRate!=null?fP(b.holdingBehaviour.tpHitRate):'insufficient data',topSymbol:b.concentration.topSym?.sym||b.concentration.topSym?.symbol||'—',topSymbolPct:fP(b.concentration.topPct),frequencyScore:b.overtrading.frequencyScore},
+    sessions:{bestSession:bS?{key:s.bestKey,pf:fPF(bS.profitFactor),wr:fP(bS.winRate),netPL:fc2(bS.netProfit),count:bS.count}:null,worstSession:wS?{key:s.worstKey,pf:fPF(wS.profitFactor),wr:fP(wS.winRate),netPL:fc2(wS.netProfit),count:wS.count}:null},
+    rules:{triggeredCount:r.triggeredCount,criticalCount:r.criticalCount,highCount:r.highCount,mediumCount:r.mediumCount,topRules:(r.triggered||[]).slice(0,5).map(x=>`${x.id} ${x.name} (${x.severity})`),topRecommendations:(r.triggered||[]).slice(0,3).map(x=>x.recommendation)},
+    broker:{recommendedRouting:bi.recommendedRouting,riskToBroker:bi.riskToBroker,expectedToxicFlow:bi.expectedToxicFlow,routingConfidence:bi.routingConfidence||70},
+    failure:{survivalScore:fa.survivalScore,p30:fa.failureProbability.p30,p90:fa.failureProbability.p90,p180:fa.failureProbability.p180,primaryDriver:fa.failureDrivers?.primary?.category||fa.primaryFailureDriver||'—',expectedTTF:fa.expectedTimeToFailure?.label||fa.expectedTimeToFailure||'—'},
+  }
+}
+
+// ═══════════ DASHBOARD RENDERING ═══════════
+function renderDashboard() {
+  document.getElementById('progress-section').style.display='none'
+  document.getElementById('upload-section').style.display='none'
+  document.getElementById('error-section').style.display='none'
+  document.getElementById('dashboard-section').style.display='block'
+  document.getElementById('reset-btn').style.display='block'
+
+  const {m, s, b, r, id, bi, fa, fcast, vld} = RESULT
+  const cur = m.currency||''
+
+  // Update rules tab button
+  document.getElementById('rules-tab-btn').textContent = `Rules (${r.triggeredCount})`
+
+  // Identity banner
+  const color = gc(id.accountGrade)
+  const r36=36, circ=2*Math.PI*r36, offset=circ-(id.diagScore/100)*circ
+  document.getElementById('identity-banner').style.borderColor = color+'40'
+  document.getElementById('identity-banner').innerHTML = `
+    <div class="grade-ring-wrap">
+      <svg width="90" height="90" viewBox="0 0 90 90">
+        <circle cx="45" cy="45" r="36" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="8"/>
+        <circle cx="45" cy="45" r="36" fill="none" stroke="${color}" stroke-width="8" stroke-linecap="round"
+          stroke-dasharray="${circ.toFixed(1)}" stroke-dashoffset="${offset.toFixed(1)}"/>
+      </svg>
+      <div class="ring-center"><div class="ring-grade" style="color:${color}">${id.accountGrade}</div><div class="ring-score">${id.diagScore}/100</div></div>
+    </div>
+    <div class="id-meta">
+      <div class="id-type">${id.traderType}</div>
+      <div class="id-sub">${id.riskProfile} · ${id.behaviourProfile} · ${id.confidence}% confidence</div>
+      <div class="id-tags">
+        <span class="id-tag">PF ${fPF(m.profitFactor)}</span>
+        <span class="id-tag">DD ${m.maxRelDD.toFixed(1)}%</span>
+        <span class="id-tag">${m.totalTrades} trades</span>
+        <span class="id-tag">${m.winRate.toFixed(1)}% WR</span>
+        <span class="id-tag">${bi.recommendedRouting}</span>
+      </div>
+    </div>
+    <div class="id-stats">
+      <div class="id-stat"><span class="id-stat-lbl">Net P&L</span><span class="id-stat-val" style="color:${m.netProfit>=0?'var(--gn)':'var(--rd)'}">${pfx(m.netProfit)}${fC(m.netProfit,cur)}</span></div>
+      <div class="id-stat"><span class="id-stat-lbl">Survival</span><span class="id-stat-val" style="color:${fa.survivalScore>=60?'var(--gn)':'var(--rd)'}">${fa.survivalScore}/100</span></div>
+      <div class="id-stat"><span class="id-stat-lbl">90-Day Risk</span><span class="id-stat-val" style="color:${fa.failureProbability.p90>50?'var(--rd)':fa.failureProbability.p90>25?'var(--am)':'var(--gn)'}">${fa.failureProbability.p90}%</span></div>
+    </div>`
+
+  // ── OVERVIEW TAB ──
+  document.getElementById('tab-overview').innerHTML = `
+    ${secHdr('Key Performance')}
+    <div class="metric-grid">
+      ${mc('Net Profit',`${pfx(m.netProfit)}${fC(m.netProfit,cur)}`,m.netProfit>=0?'var(--gn)':'var(--rd)')}
+      ${mc('Win Rate',fP(m.winRate),m.winRate>=55?'var(--gn)':m.winRate>=40?'var(--am)':'var(--rd)',`${m.winningTrades}W / ${m.losingTrades}L`)}
+      ${mc('Profit Factor',fPF(m.profitFactor),m.profitFactor>=1.5?'var(--gn)':m.profitFactor>=1?'var(--am)':'var(--rd)')}
+      ${mc('Max Drawdown',fP(m.maxRelDD),m.maxRelDD>30?'var(--rd)':m.maxRelDD>15?'var(--am)':'var(--gn)')}
+      ${mc('Survival Score',`${fa.survivalScore}/100`,fa.survivalScore>=60?'var(--gn)':'var(--rd)')}
+      ${mc('Routing',bi.recommendedRouting,bi.recommendedRouting==='A-Book'?'var(--gn)':bi.recommendedRouting==='B-Book'?'var(--rd)':'var(--cy)')}
+    </div>
+    ${secHdr('Failure Probability')}
+    <div class="fp-grid">
+      ${[['30 Days',fa.failureProbability.p30],['90 Days',fa.failureProbability.p90],['180 Days',fa.failureProbability.p180]].map(([l,v])=>`
+      <div class="fp-card" style="border-color:${v>50?'rgba(255,64,96,.3)':v>25?'rgba(245,158,11,.3)':'rgba(22,199,132,.2)'}">
+        <div class="fp-lbl">${l}</div>
+        <div class="fp-num" style="color:${v>50?'var(--rd)':v>25?'var(--am)':'var(--gn)'}">${v}%</div>
+      </div>`).join('')}
+    </div>
+    <div style="background:var(--ink3);border:1px solid var(--bd);border-radius:8px;padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--mu2)">
+      Primary failure driver: <strong style="color:var(--rd)">${fa.failureDrivers?.primary?.category||fa.primaryFailureDriver||'—'}</strong>
+      &nbsp;·&nbsp; Expected lifespan: <strong style="color:var(--cy)">${fa.expectedTimeToFailure?.label||fa.expectedTimeToFailure||'—'}</strong>
+    </div>
+    ${vld.criticals.length > 0 ? `
+    ${secHdr(`Validation Alerts (${vld.criticals.length} critical)`)}
+    ${vld.criticals.slice(0,4).map(f=>`<div class="finding-row" style="background:var(--rdbg);border-color:rgba(255,64,96,.3)"><span class="finding-sev" style="background:var(--rdbg);color:var(--rd);border:1px solid rgba(255,64,96,.3)">CRITICAL</span><span class="finding-msg">${f.message}</span></div>`).join('')}`:''}
+  `
+
+  // ── METRICS TAB ──
+  const fMs = ms => { if(!ms||ms<=0) return '—'; const s2=Math.floor(ms/1000),m2=Math.floor(s2/60),h=Math.floor(m2/60),d=Math.floor(h/24); if(s2<60)return`${s2}s`; if(m2<60)return`${m2}m`; if(h<24)return`${h}h ${m2%60}m`; return`${d}d ${h%24}h` }
+  document.getElementById('tab-metrics').innerHTML = `
+    ${secHdr('Account Metrics')}
+    <div class="metric-grid">
+      ${mc('Total Trades',m.totalTrades,'var(--cy)',`${m.calDays} calendar days`)}
+      ${mc('Winning Trades',m.winningTrades,'var(--gn)')}
+      ${mc('Losing Trades',m.losingTrades,'var(--rd)')}
+      ${mc('Gross Profit',`+${fC(m.grossProfit,cur)}`,'var(--gn)')}
+      ${mc('Gross Loss',`-${fC(m.grossLossAbs,cur)}`,'var(--rd)')}
+      ${mc('Avg Win',m.avgWin?`+${fC(m.avgWin,cur)}`:'—','var(--gn)')}
+      ${mc('Avg Loss',m.avgLoss?`-${fC(m.avgLoss,cur)}`:'—','var(--rd)')}
+      ${mc('Largest Win',m.largestWin?`+${fC(m.largestWin,cur)}`:'—','var(--gn)')}
+      ${mc('Largest Loss',m.largestLoss?`-${fC(m.largestLoss,cur)}`:'—','var(--rd)')}
+      ${mc('Avg Hold Time',fMs(m.avgHoldMs),'var(--cy)')}
+      ${mc('Max Loss Streak',m.maxLossStreak,m.maxLossStreak>8?'var(--rd)':'var(--am)')}
+      ${mc('Recovery Factor',m.recoveryFactor!=null?m.recoveryFactor.toFixed(2):'—',m.recoveryFactor>=2?'var(--gn)':m.recoveryFactor>=1?'var(--am)':'var(--rd)')}
+    </div>
+    ${secHdr('Symbol Breakdown')}
+    <div class="tbl-wrap"><table class="data-table">
+      <thead><tr><th>Symbol</th><th>Trades</th><th>Wins</th><th>Win%</th><th>Net P&L</th><th>PF</th></tr></thead>
+      <tbody>${(m.symbolStats||[]).map(sym=>`<tr>
+        <td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--wh)">${sym.symbol}</td>
+        <td style="font-family:'JetBrains Mono',monospace;color:var(--cy)">${sym.count}</td>
+        <td style="font-family:'JetBrains Mono',monospace;color:var(--gn)">${sym.wins}</td>
+        <td style="font-family:'JetBrains Mono',monospace;color:${sym.winRate>=55?'var(--gn)':'var(--am)'}">${sym.winRate.toFixed(1)}%</td>
+        <td style="font-family:'JetBrains Mono',monospace;font-weight:600;color:${sym.netPL>=0?'var(--gn)':'var(--rd)'}">${pfx(sym.netPL)}${fC(sym.netPL,cur)}</td>
+        <td style="font-family:'JetBrains Mono',monospace;color:${sym.profitFactor>=1.5?'var(--gn)':sym.profitFactor>=1?'var(--am)':'var(--rd)'}">${fPF(sym.profitFactor)}</td>
+      </tr>`).join('')}</tbody>
+    </table></div>`
+
+  // ── SESSIONS TAB ──
+  const SESS_META = {Asia:{color:'#a78bfa'},London:{color:'#00d2ff'},NewYork:{color:'#f59e0b'},After:{color:'#5a7090'}}
+  document.getElementById('tab-sessions').innerHTML = `
+    ${secHdr('Session Performance')}
+    <div class="sess-grid">
+      ${Object.keys(SESS_META).map(key=>{
+        const sess=s.sessions[key]; if(!sess) return ''
+        const col=SESS_META[key].color
+        const isBest=s.bestKey===key, isWorst=s.worstKey===key
+        return `<div class="sess-card" style="background:${col}10;border-color:${col}35">
+          <div class="sess-hdr" style="background:${col}14">
+            <div class="sess-name" style="color:${col}">${key}</div>
+            <div style="display:flex;gap:4px;align-items:center">
+              ${isBest?`<span class="sess-badge" style="background:rgba(22,199,132,.15);color:var(--gn);border-color:rgba(22,199,132,.3)">BEST</span>`:''}
+              ${isWorst?`<span class="sess-badge" style="background:rgba(255,64,96,.15);color:var(--rd);border-color:rgba(255,64,96,.3)">WORST</span>`:''}
+              <span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--mu)">${sess.count} trades</span>
+            </div>
+          </div>
+          <div class="sess-body">
+            ${[['Net P&L',`${pfx(sess.netProfit)}${fC(sess.netProfit,cur)}`,sess.netProfit>=0?'var(--gn)':'var(--rd)'],['Win Rate',fP(sess.winRate),sess.winRate>=55?'var(--gn)':'var(--am)'],['P.Factor',fPF(sess.profitFactor),sess.profitFactor>=1.5?'var(--gn)':sess.profitFactor>=1?'var(--am)':'var(--rd)'],['W / L',`${sess.wins} / ${sess.losses}`,'var(--mu2)']].map(([l,v,c])=>`
+            <div class="sess-row"><span class="sess-row-lbl">${l}</span><span class="sess-row-val" style="color:${c}">${v}</span></div>`).join('')}
+          </div>
+        </div>`}).join('')}
+    </div>`
+
+  // ── BEHAVIOUR TAB ──
+  document.getElementById('tab-behaviour').innerHTML = `
+    ${secHdr('Behaviour Signals')}
+    <div class="metric-grid">
+      ${mc('Martingale Conf',`${b.lotEscalation.martingaleConf}/100`,b.lotEscalation.martingaleConf>65?'var(--rd)':b.lotEscalation.martingaleConf>35?'var(--am)':'var(--gn)')}
+      ${mc('Escalation Rate',fP(b.lotEscalation.escalationRate),b.lotEscalation.escalationRate>40?'var(--rd)':b.lotEscalation.escalationRate>20?'var(--am)':'var(--gn)')}
+      ${mc('Lot CV',fP(b.lotEscalation.lotCV*100),b.lotEscalation.lotCV>0.5?'var(--rd)':b.lotEscalation.lotCV>0.3?'var(--am)':'var(--gn)')}
+      ${mc('Immediate Re-Entry',fP(b.recoveryBehaviour.immediateReentryRate),b.recoveryBehaviour.immediateReentryRate>30?'var(--rd)':'var(--am)')}
+      ${mc('Revenge Trading',b.recoveryBehaviour.revengeDetected?'CONFIRMED':'Not detected',b.recoveryBehaviour.revengeDetected?'var(--rd)':'var(--gn)')}
+      ${mc('Hold Ratio W/L',b.holdingBehaviour.holdRatio!=null?b.holdingBehaviour.holdRatio.toFixed(2):'—',b.holdingBehaviour.holdRatio<1?'var(--rd)':'var(--gn)',b.holdingBehaviour.holdRatio<1?'cuts winners short':'holds winners longer')}
+      ${mc('Freq Score',`${b.overtrading.frequencyScore}/100`,b.overtrading.frequencyScore>65?'var(--rd)':'var(--am)')}
+      ${mc('Avg Trades/Day',b.overtrading.avgPerTradingDay.toFixed(1))}
+      ${mc('Top Symbol',b.concentration.topSym?.sym||b.concentration.topSym?.symbol||'—','var(--cy)',fP(b.concentration.topPct)+' of trades')}
+    </div>`
+
+  // ── RULES TAB ──
+  const SVR = {CRITICAL:'#ff4060',HIGH:'#f59e0b',MEDIUM:'#00d2ff',LOW:'#a8bdd1'}
+  document.getElementById('tab-rules').innerHTML = r.triggered.length === 0
+    ? `<div style="text-align:center;padding:24px;color:var(--gn);font-family:'JetBrains Mono',monospace;font-size:12px">✓ No rules triggered — clean diagnostic profile</div>`
+    : (r.triggered||[]).map(rule=>{
+        const c=SVR[rule.severity]||'var(--mu2)'
+        return `<div class="rule-card" style="border-color:${c}35">
+          <div class="rule-top" style="background:${c}12">
+            <span class="rule-id" style="color:${c}">${rule.id}</span>
+            <span class="rule-name">${rule.name}</span>
+            <span class="rule-sev" style="color:${c};background:${c}20;border:1px solid ${c}40">${rule.severity}</span>
+          </div>
+          <div class="rule-body">
+            <div><div class="rule-blk-lbl" style="color:${c}">Trigger</div><div class="rule-blk-txt" style="color:${c};font-family:'JetBrains Mono',monospace;font-size:10px">${rule.triggerValue||'—'}</div></div>
+            <div><div class="rule-blk-lbl" style="color:var(--cy)">Action Required</div><div class="rule-blk-txt">${rule.recommendation||'—'}</div></div>
+          </div>
+        </div>`}).join('')
+
+  // ── FORECAST TAB ──
+  document.getElementById('tab-forecast').innerHTML = `
+    ${secHdr('KAVOX Predictive Engine™ — 90-Day Forecast')}
+    <div style="background:var(--ink3);border:1px solid var(--bd);border-radius:8px;padding:12px 15px;margin-bottom:12px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--mu2);line-height:1.65">
+      <strong style="color:var(--cy)">Outlook:</strong> ${fcast.threeMoOutlook}<br>
+      <strong style="color:var(--mu)">Monte Carlo:</strong> ${fcast.monteCarloPaths?.toLocaleString()||1000} paths · Seed: ${fcast.seed||0} · Confidence: ${fcast.forecastConfidence||0}%
+    </div>
+    <div class="metric-grid">
+      ${mc('Median P&L 90D',fC(fcast.performanceForecast?.distribution?.[90]?.p50,cur),'var(--cy)','50th percentile MC')}
+      ${mc('Worst 5% 90D',fC(fcast.performanceForecast?.distribution?.[90]?.p05,cur),'var(--rd)','5th percentile MC')}
+      ${mc('Best 95% 90D',fC(fcast.performanceForecast?.distribution?.[90]?.p95,cur),'var(--gn)','95th percentile MC')}
+      ${mc('Prob Profitable 90D',fP(fcast.performanceForecast?.breakEvenProbability?.in90Days),fcast.performanceForecast?.breakEvenProbability?.in90Days>50?'var(--gn)':'var(--rd)')}
+      ${mc('Sim Failure Rate 90D',fP(fcast.performanceForecast?.simulatedFailureRate?.within90Days),'var(--am)','from 1,000 MC paths')}
+      ${mc('Survival Gain if Fixed',`+${fcast.improvementProjection?.summary?.survivalGainFix2||0} pts`,'var(--gn)','top 2 issues corrected')}
+    </div>`
+
+  // ── VALIDATION TAB ──
+  document.getElementById('tab-validation').innerHTML = `
+    ${secHdr(`Validation — Score ${vld.validationScore}/100`)}
+    <div class="sev-pills">
+      ${[['CRITICAL',vld.criticals.length,'var(--rd)'],['WARNING',vld.warnings.length,'var(--am)'],['Contradictions',vld.contradictions.length,'var(--pu)'],['Missing Data',vld.missingData.length,'var(--cy)']].map(([l,n,c])=>`
+      <div class="sev-pill" style="background:${n>0?c+'12':'rgba(255,255,255,.02)'};border-color:${n>0?c+'50':'var(--bd)'}">
+        <span class="sev-pill-num" style="color:${n>0?c:'var(--mu)'}">${n}</span>
+        <span class="sev-pill-lbl" style="color:${n>0?c:'var(--mu)'}">${l}</span>
+      </div>`).join('')}
+    </div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--mu2);margin-bottom:12px">
+      ${vld.validationLabel} · Confidence adjustment: −${vld.confidenceAdjustment.reductionPct}%
+    </div>
+    ${(vld.allFindings||[]).slice(0,12).map(f=>{
+      const c=SEV_COLORS[f.severity]||'var(--mu2)'
+      return `<div class="finding-row" style="background:${c}08;border-color:${c}25">
+        <span class="finding-sev" style="color:${c};background:${c}15;border:1px solid ${c}30">${f.severity}</span>
+        <span class="finding-msg">${f.message}</span>
+      </div>`}).join('')}`
+}
+
+// ═══════════ TABS ═══════════
+function showTab(name) {
+  document.querySelectorAll('.tab-btn').forEach((btn,i)=>{
+    const names=['overview','metrics','sessions','behaviour','rules','forecast','validation','report']
+    btn.classList.toggle('active', names[i]===name)
+  })
+  document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'))
+  document.getElementById('tab-'+name)?.classList.add('active')
+}
+
+// ═══════════ AI REPORT ═══════════
+async function generateReport() {
+  if (!SNAPSHOT) return
+  document.getElementById('report-generate-area').style.display='none'
+  document.getElementById('report-loading').style.display='block'
+  document.getElementById('report-error').style.display='none'
+  document.getElementById('report-output').style.display='none'
+
+  try {
+    const resp = await fetch('/api/generate-report', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({snapshot: SNAPSHOT})
+    })
+    const data = await resp.json()
+    if (!resp.ok || data.error) throw new Error(data.error||`HTTP ${resp.status}`)
+
+    const ICONS = {executiveSummary:'📋',traderIdentity:'🪪',keyStrengths:'💪',keyWeaknesses:'⚠️',riskAssessment:'📉',behaviourAnalysis:'🧠',sessionAnalysis:'🕐',brokerRoutingAssessment:'🏦',failureProbabilityAnalysis:'📊',actionPlan:'✅',expectedImprovementScenario:'🚀'}
+    const ORDER = ['executiveSummary','traderIdentity','keyStrengths','keyWeaknesses','riskAssessment','behaviourAnalysis','sessionAnalysis','brokerRoutingAssessment','failureProbabilityAnalysis','actionPlan','expectedImprovementScenario']
+
+    document.getElementById('report-loading').style.display='none'
+    const out = document.getElementById('report-output')
+    out.style.display='block'
+    out.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+        <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px">AI Executive Report</span>
+        <div style="flex:1;height:1px;background:linear-gradient(90deg,var(--bd2) 0%,transparent 100%)"></div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--mu)">Generated by Claude Sonnet</span>
+        <button onclick="generateReport()" style="background:none;border:1px solid var(--bd);border-radius:5px;color:var(--mu);font-family:'JetBrains Mono',monospace;font-size:8.5px;padding:3px 10px">Regenerate</button>
+      </div>
+      ${ORDER.map((key,i)=>{
+        if(!data.report[key]) return ''
+        const {title,content} = data.report[key]
+        return `<div class="report-section">
+          <div class="report-sec-hdr">
+            <span>${ICONS[key]||'•'}</span>
+            <span class="report-sec-num">§${String(i+1).padStart(2,'0')}</span>
+            <span class="report-sec-title">${title}</span>
+          </div>
+          <div class="report-sec-body">${content}</div>
+        </div>`}).join('')}
+      <div style="text-align:center;padding:16px 0 0;border-top:1px solid var(--bd);margin-top:8px">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:rgba(122,144,171,.4)">DataLB · For educational purposes only · Not financial advice</span>
+      </div>`
+
+  } catch(err) {
+    document.getElementById('report-loading').style.display='none'
+    const errEl = document.getElementById('report-error')
+    errEl.style.display='block'
+    errEl.innerHTML=`<strong style="color:var(--rd)">Report generation failed:</strong> ${err.message}<br><button onclick="generateReport()" style="margin-top:8px;background:var(--cy);color:var(--ink);border:none;border-radius:6px;padding:6px 16px;font-weight:700;font-size:12px;cursor:pointer">Retry</button>`
+    document.getElementById('report-generate-area').style.display='block'
+  }
+}
+
+// ═══════════ RESET ═══════════
+function resetApp() {
+  RESULT=null; SNAPSHOT=null
+  document.getElementById('upload-section').style.display='block'
+  document.getElementById('progress-section').style.display='none'
+  document.getElementById('error-section').style.display='none'
+  document.getElementById('dashboard-section').style.display='none'
+  document.getElementById('reset-btn').style.display='none'
+  document.getElementById('file-input').value=''
+  showTab('overview')
+  document.getElementById('report-generate-area').style.display='block'
+  document.getElementById('report-loading').style.display='none'
+  document.getElementById('report-output').style.display='none'
+  document.getElementById('report-error').style.display='none'
+}
+</script>
+
+<!-- ═══════ ALL 10 ANALYTICS ENGINES ═══════ -->
+<script src="engines.js"></script>
+
+</body>
+</html>
