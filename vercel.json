@@ -1,6 +1,12 @@
 {
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/(.*)", "destination": "/index.html" }
+  "version": 2,
+  "builds": [
+    { "src": "api/generate-report.js", "use": "@vercel/node" },
+    { "src": "index.html", "use": "@vercel/static" },
+    { "src": "engines.js", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/api/generate-report", "dest": "/api/generate-report.js" },
+    { "src": "/(.*)", "dest": "/$1" }
   ]
 }
